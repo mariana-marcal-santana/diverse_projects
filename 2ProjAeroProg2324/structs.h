@@ -8,8 +8,25 @@ typedef struct {
     char direction;
 } LatLong;
 
+typedef struct Flight {
+    char *airline;
+    char *flight_code;
+    char *depart_IATA;
+    char *arrival_IATA;
+    int depart_time_hour;
+    int depart_time_minute;
+    int arrival_time_hour;
+    int arrival_time_minute;
+    struct Flight *next;
+    struct Flight *prev;
+} Flight;
 
 typedef struct {
+    Flight *head;
+    Flight *tail;
+} Flight_list;
+
+typedef struct Airport {
     int id;
     char *ICAO;
     char *IATA;
@@ -17,14 +34,13 @@ typedef struct {
     LatLong longitude;
     char *city;
     int timezone;
-    Airport *next;
-    Airport *prev;
+    struct Airport *next;
+    struct Airport *prev;
 } Airport;
 
 typedef struct{
     Airport *head;
     Airport *tail;
 } Airport_list;
-
 
 #endif

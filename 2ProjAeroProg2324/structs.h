@@ -17,6 +17,14 @@ typedef struct {
     LatLong longitude;
     char *city;
     int timezone;
+    Airport *next;
+    Airport *prev;
 } Airport;
+
+typedef struct{
+    Airport *head;
+    Airport *tail;
+} Airport_list;
+
 
 #endif

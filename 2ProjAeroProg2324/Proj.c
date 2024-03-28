@@ -72,8 +72,9 @@ void read_airports(FILE *airports){
         
         Airport *airport = malloc(sizeof(Airport));
         airport->ICAO = malloc(5 * sizeof(char));
-        airport->IATA = malloc(4 * sizeof(char));
+        airport->IATA = malloc(5 * sizeof(char));
         airport->city = malloc(50 * sizeof(char));
+        airport->timezone = 0;
        
         sscanf(line,"%s %s %d %d %d %c %d %d %d %c %s %d", airport->ICAO, airport->IATA, 
         &airport->latitude.degrees, &airport->latitude.minutes, &airport->latitude.seconds, &airport->latitude.direction,

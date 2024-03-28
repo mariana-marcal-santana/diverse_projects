@@ -186,7 +186,6 @@ void show_direct_flights_sorted(char *origin, char *destiny, char *sort_type) {
 
     while (flight != NULL) {
         if (!strcmp(flight->depart_IATA, origin) && !strcmp(flight->arrival_IATA, destiny)) {
-            printf("Flight: %s %s %s %s\n", flight->depart_IATA, origin, flight->arrival_IATA, destiny);
             
             Flight *new_flight = malloc(sizeof(Flight));
             new_flight->airline = malloc(10 * sizeof(char));
@@ -212,10 +211,12 @@ void show_direct_flights_sorted(char *origin, char *destiny, char *sort_type) {
                 new_flight->next = sorted_flights->head;
                 sorted_flights->head = new_flight;
             }
-            flight = flight->next;
         }
         flight = flight->next;
     }
+
+    if (!strcmp(sort_type, "-TC")) { sort_flights_ascending(sorted_flights); }
+    else if (!strcmp(sort_type, "-TD")) { sort_flights_descending(sorted_flights); }
 
     Flight *sorted_flight = sorted_flights->head;
     while (sorted_flight != NULL) {
@@ -225,70 +226,40 @@ void show_direct_flights_sorted(char *origin, char *destiny, char *sort_type) {
         printf("%.2d:%.2d\n", sorted_flight->arrival_time_hour, sorted_flight->arrival_time_minute);
         sorted_flight = sorted_flight->next;
     }
-
-    if (!strcmp(sort_type, "-TC")) { sort_flights_ascending(sorted_flights); }
-    else if (!strcmp(sort_type, "-TD")) { sort_flights_descending(sorted_flights); }
-
-    
 }
 
 void sort_flights_ascending(Flight_list *flights) {
 
     printf("Sorting ascending\n");
 
-    Flight *flight = flights->head;
-    Flight *temp = NULL;
+    Flight *flight = flights->head, *temp = NULL;
+
     int flag = 1;
     
     while (flag) {
         flag = 0;
+        flight = flights->head;
+        
         while (flight->next != NULL) {
-            if (flight->depart_time_hour > flight->next->depart_time_hour) {
+            if (flight->depart_time_hour > flight->next->depart_time_hour ||
+            (flight->depart_time_hour == flight->next->depart_time_hour &&
+            flight->depart_time_minute > flight->next->depart_time_minute)) {
+                printf("in1");
                 temp = flight;
                 flight = flight->next;
                 flight->next = temp;
                 flag = 1;
             } 
-            else if (flight->depart_time_hour == flight->next->depart_time_hour) {
-                if (flight->depart_time_minute > flight->next->depart_time_minute) {
-                    temp = flight;
-                    flight = flight->next;
-                    flight->next = temp;
-                    flag = 1;
-                }
-            }
             flight = flight->next;
         }
     }
 }
 
 void sort_flights_descending(Flight_list *flights) {
-    Flight *flight = flights->head;
+    Flight *flight = flights->head, *flight2 = flights->head;
     Flight *temp = NULL;
-    int flag = 1;
-    
-    while (flag) {
-        flag = 0;
-        while (flight->next != NULL) {
-            if (flight->depart_time_hour > flight->next->depart_time_hour) {
-                temp = flight;
-                flight = flight->next;
-                flight->next = temp;
-                flag = 1;
-            } 
-            else if (flight->depart_time_hour == flight->next->depart_time_hour) {
-                if (flight->depart_time_minute > flight->next->depart_time_minute) {
-                    temp = flight;
-                    flight = flight->next;
-                    flight->next = temp;
-                    flag = 1;
-                }
-            }
-            flight = flight->next;
-        }
-    }
-
-    /*while (flight != NULL) {
+   
+    while (flight != NULL) {
         while (flight2 != NULL) {
             if (flight->depart_time_hour > flight2->depart_time_hour) {
                 temp = flight;
@@ -304,7 +275,7 @@ void sort_flights_descending(Flight_list *flights) {
             flight2 = flight2->next;
         }
         flight = flight->next;
-    }*/
+    }
 }     
 
 double calc_airport_distance(char *airportA_IATA, char *airportB_IATA) {

@@ -181,12 +181,13 @@ void show_direct_flights_sorted(char *origin, char *destiny, char *sort_type) {
     Flight_list *sorted_flights = malloc(sizeof(Flight_list));
     sorted_flights->head = NULL;
     sorted_flights->tail = NULL;
+    
     Flight *flight = flights_list->head;
 
     while (flight != NULL) {
         if (!strcmp(flight->depart_IATA, origin) && !strcmp(flight->arrival_IATA, destiny)) {
             printf("Flight: %s %s %s %s\n", flight->depart_IATA, origin, flight->arrival_IATA, destiny);
-
+            
             Flight *new_flight = malloc(sizeof(Flight));
             new_flight->airline = malloc(10 * sizeof(char));
             new_flight->flight_code = malloc(10 * sizeof(char));
@@ -204,13 +205,14 @@ void show_direct_flights_sorted(char *origin, char *destiny, char *sort_type) {
             new_flight->prev = NULL;
 
             if (sorted_flights->head == NULL) {
-                sorted_flights->head = flight;
-                sorted_flights->tail = flight;
+                sorted_flights->head = new_flight;
+                sorted_flights->tail = new_flight;
             } else {
-                sorted_flights->head->prev = flight;
-                flight->next = sorted_flights->head;
-                sorted_flights->head = flight;
+                sorted_flights->head->prev = new_flight;
+                new_flight->next = sorted_flights->head;
+                sorted_flights->head = new_flight;
             }
+            flight = flight->next;
         }
         flight = flight->next;
     }

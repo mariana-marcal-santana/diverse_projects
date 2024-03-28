@@ -45,17 +45,16 @@ int main(int argc, char *argv[]) {
         case 5:
             int i = atoi(argv[4]);
             if (i == 0) { show_direct_flights(argv[1], argv[2]); } // 3
-            else if (i == 1) { //show_flights_1connection(argv[1], argv[2], argv[4]); 
-            } // 5
+            else if (i == 1) { show_flights_1connection(argv[1], argv[2]); } // 5
+            else if (i == 2) { show_flights_2connections(argv[1], argv[2]); } // case for 2 connections
             else { printf("Invalid argument\n"); }
             break;
-        case 6: //cases 4 and 6
+        case 6:
             int j = atoi(argv[4]);
             if (j == 0) { show_direct_flights_sorted(argv[1], argv[2], argv[5]); } // 4
-            else if (j == 1) { //show_flights_1connection_sorted(argv[1], argv[2], argv[4], argv[5]);
-             } // 6
+            //else if (j == 1) { show_flights_1connection_sorted(argv[1], argv[2], argv[4], argv[5]); } // 6
+            else if (j == 2) { printf("show_flights_2connections_sorted\n"); }
             else { printf("Invalid argument\n"); }
-
             break;
         case 7:
             
@@ -277,6 +276,71 @@ void sort_flights_descending(Flight_list *flights) {
         flight = flight->next;
     }
 }     
+
+void show_flights_1connection(char *origin, char *destiny) {
+
+    Flight *flight = flights_list->head;
+    while (flight != NULL) {
+
+        Flight *flight2 = flights_list->head;
+        while (flight2 != NULL) {
+
+            if (!strcmp(flight->depart_IATA, origin) && !strcmp(flight2->arrival_IATA, destiny) &&
+            !strcmp(flight->arrival_IATA, flight2->depart_IATA)) {
+
+                printf("%s %s ", flight->flight_code, flight->depart_IATA);
+                printf("%.2d:%.2d ", flight->depart_time_hour, flight->depart_time_minute);
+                printf("%s ", flight->arrival_IATA);
+                printf("%.2d:%.2d ", flight->arrival_time_hour, flight->arrival_time_minute);
+                printf("connects to ");
+                printf("%s %s ", flight2->flight_code, flight2->depart_IATA);
+                printf("%.2d:%.2d ", flight2->depart_time_hour, flight2->depart_time_minute);
+                printf("%s ", flight2->arrival_IATA);
+                printf("%.2d:%.2d\n", flight2->arrival_time_hour, flight2->arrival_time_minute);
+            }
+            flight2 = flight2->next;
+        }
+        flight = flight->next;
+    }
+}
+
+void show_flights_2connections(char *origin, char *destiny) {
+
+    Flight *flight = flights_list->head;
+    while (flight != NULL) {
+
+        Flight *flight2 = flights_list->head;
+        while (flight2 != NULL) {
+
+            Flight *flight3 = flights_list->head;
+            while(flight3 != NULL) {
+
+                if (!strcmp(flight->depart_IATA, origin) && !strcmp(flight2->depart_IATA, flight->arrival_IATA) &&
+                !strcmp(flight3->arrival_IATA, destiny) && !strcmp(flight2->arrival_IATA, flight3->depart_IATA)) {
+                    
+                    printf("%s %s ", flight->flight_code, flight->depart_IATA);
+                    printf("%.2d:%.2d ", flight->depart_time_hour, flight->depart_time_minute);
+                    printf("%s ", flight->arrival_IATA);
+                    printf("%.2d:%.2d ", flight->arrival_time_hour, flight->arrival_time_minute);
+                    printf("connects to ");
+                    printf("%s %s ", flight2->flight_code, flight2->depart_IATA);
+                    printf("%.2d:%.2d ", flight2->depart_time_hour, flight2->depart_time_minute);
+                    printf("%s ", flight2->arrival_IATA);
+                    printf("%.2d:%.2d ", flight2->arrival_time_hour, flight2->arrival_time_minute);
+                    printf("connects to ");
+                    printf("%s %s ", flight3->flight_code, flight3->depart_IATA);
+                    printf("%.2d:%.2d ", flight3->depart_time_hour, flight3->depart_time_minute);
+                    printf("%s ", flight3->arrival_IATA);
+                    printf("%.2d:%.2d\n", flight3->arrival_time_hour, flight3->arrival_time_minute);
+                }
+                flight3 = flight3->next;
+            }
+            flight2 = flight2->next;
+        }
+        flight = flight->next;
+    }
+    
+}
 
 double calc_airport_distance(char *airportA_IATA, char *airportB_IATA) {
 

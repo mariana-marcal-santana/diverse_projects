@@ -5,6 +5,8 @@ void read_airports(FILE *airports) ;
 void read_fligths(FILE *routes) ;
 void show_direct_flights(char *argv1, char *argv2) ;
 void show_direct_flights_sorted(char *origin, char *destiny, char *sort_type);
+void show_flights_1connection(char *origin, char *destiny) ;
+void show_flights_2connections(char *origin, char *destiny) ;
 void sort_flights_ascending(Flight_list *flights);
 void sort_flights_descending(Flight_list *flights);
 double calc_airport_distance(char *argv1, char *argv2) ;

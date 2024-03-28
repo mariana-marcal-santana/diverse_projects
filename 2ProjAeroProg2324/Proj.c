@@ -14,7 +14,6 @@ int main(int argc, char *argv[]) {
     FILE *airports, *routes;
     airports = fopen("aeroportos.txt", "r");
     routes = fopen("rotas.txt", "r");
-    
     if (airports == NULL || routes == NULL) {
         printf("Error opening files\n");
         return 1;
@@ -39,20 +38,28 @@ int main(int argc, char *argv[]) {
             printf("No arguments\n");
             break;
         case 2:
-            if (!strcmp(argv[1], "-voos")) { case_flights(); }
-            else if (!strcmp(argv[1], "-aeroportos")) { case_airports(); }
+            if (!strcmp(argv[1], "-voos")) { case_flights(); } // 1
+            else if (!strcmp(argv[1], "-aeroportos")) { case_airports(); } // 2
             else { printf("Invalid argument\n"); }
             break;
-        case 5: //cases 3 and 5
-            show_flights(argv[1], argv[2], argv[4]);
+        case 5:
+            int i = atoi(argv[4]);
+            if (i == 0) { show_direct_flights(argv[1], argv[2]); } // 3
+            else if (i == 1) { //show_flights_1connection(argv[1], argv[2], argv[4]); 
+            } // 5
+            else { printf("Invalid argument\n"); }
             break;
         case 6: //cases 4 and 6
-            
+            int j = atoi(argv[4]);
+            if (j == 0) { show_direct_flights_sorted(argv[1], argv[2], argv[5]); } // 4
+            else if (j == 1) { //show_flights_1connection_sorted(argv[1], argv[2], argv[4], argv[5]);
+             } // 6
+            else { printf("Invalid argument\n"); }
+
             break;
         case 7:
             
             break;
-        
         default:
             printf("Invalid number of arguments\n");
             break;
@@ -155,10 +162,148 @@ void case_airports() {
     }
 }
 
-void show_flights(char *origin, char *destiny, char *date) {
-    printf("Case flights\n");
-    printf("%s %s %s\n", origin, destiny, date);
+void show_direct_flights(char *origin, char *destiny) {
+    Flight *flight = flights_list->head;
+    
+    while (flight != NULL) {
+        if (!strcmp(flight->depart_IATA, origin) && !strcmp(flight->arrival_IATA, destiny)) {
+            printf("%s %s ", flight->flight_code, flight->depart_IATA);
+            printf("%.2d:%.2d ", flight->depart_time_hour, flight->depart_time_minute);
+            printf("%s ", flight->arrival_IATA);
+            printf("%.2d:%.2d\n", flight->arrival_time_hour, flight->arrival_time_minute);
+        }
+        flight = flight->next;
+    }
 }
+
+void show_direct_flights_sorted(char *origin, char *destiny, char *sort_type) {
+
+    Flight_list *sorted_flights = malloc(sizeof(Flight_list));
+    sorted_flights->head = NULL;
+    sorted_flights->tail = NULL;
+    Flight *flight = flights_list->head;
+
+    while (flight != NULL) {
+        if (!strcmp(flight->depart_IATA, origin) && !strcmp(flight->arrival_IATA, destiny)) {
+            printf("Flight: %s %s %s %s\n", flight->depart_IATA, origin, flight->arrival_IATA, destiny);
+
+            Flight *new_flight = malloc(sizeof(Flight));
+            new_flight->airline = malloc(10 * sizeof(char));
+            new_flight->flight_code = malloc(10 * sizeof(char));
+            new_flight->depart_IATA = malloc(5 * sizeof(char));
+            new_flight->arrival_IATA = malloc(5 * sizeof(char));
+            new_flight->airline = flight->airline;
+            new_flight->flight_code = flight->flight_code;
+            new_flight->depart_IATA = flight->depart_IATA;
+            new_flight->arrival_IATA = flight->arrival_IATA;
+            new_flight->depart_time_hour = flight->depart_time_hour;
+            new_flight->depart_time_minute = flight->depart_time_minute;
+            new_flight->arrival_time_hour = flight->arrival_time_hour;
+            new_flight->arrival_time_minute = flight->arrival_time_minute;
+            new_flight->next = NULL;
+            new_flight->prev = NULL;
+
+            if (sorted_flights->head == NULL) {
+                sorted_flights->head = flight;
+                sorted_flights->tail = flight;
+            } else {
+                sorted_flights->head->prev = flight;
+                flight->next = sorted_flights->head;
+                sorted_flights->head = flight;
+            }
+        }
+        flight = flight->next;
+    }
+
+    Flight *sorted_flight = sorted_flights->head;
+    while (sorted_flight != NULL) {
+        printf("%s %s ", sorted_flight->flight_code, sorted_flight->depart_IATA);
+        printf("%.2d:%.2d ", sorted_flight->depart_time_hour, sorted_flight->depart_time_minute);
+        printf("%s ", sorted_flight->arrival_IATA);
+        printf("%.2d:%.2d\n", sorted_flight->arrival_time_hour, sorted_flight->arrival_time_minute);
+        sorted_flight = sorted_flight->next;
+    }
+
+    if (!strcmp(sort_type, "-TC")) { sort_flights_ascending(sorted_flights); }
+    else if (!strcmp(sort_type, "-TD")) { sort_flights_descending(sorted_flights); }
+
+    
+}
+
+void sort_flights_ascending(Flight_list *flights) {
+
+    printf("Sorting ascending\n");
+
+    Flight *flight = flights->head;
+    Flight *temp = NULL;
+    int flag = 1;
+    
+    while (flag) {
+        flag = 0;
+        while (flight->next != NULL) {
+            if (flight->depart_time_hour > flight->next->depart_time_hour) {
+                temp = flight;
+                flight = flight->next;
+                flight->next = temp;
+                flag = 1;
+            } 
+            else if (flight->depart_time_hour == flight->next->depart_time_hour) {
+                if (flight->depart_time_minute > flight->next->depart_time_minute) {
+                    temp = flight;
+                    flight = flight->next;
+                    flight->next = temp;
+                    flag = 1;
+                }
+            }
+            flight = flight->next;
+        }
+    }
+}
+
+void sort_flights_descending(Flight_list *flights) {
+    Flight *flight = flights->head;
+    Flight *temp = NULL;
+    int flag = 1;
+    
+    while (flag) {
+        flag = 0;
+        while (flight->next != NULL) {
+            if (flight->depart_time_hour > flight->next->depart_time_hour) {
+                temp = flight;
+                flight = flight->next;
+                flight->next = temp;
+                flag = 1;
+            } 
+            else if (flight->depart_time_hour == flight->next->depart_time_hour) {
+                if (flight->depart_time_minute > flight->next->depart_time_minute) {
+                    temp = flight;
+                    flight = flight->next;
+                    flight->next = temp;
+                    flag = 1;
+                }
+            }
+            flight = flight->next;
+        }
+    }
+
+    /*while (flight != NULL) {
+        while (flight2 != NULL) {
+            if (flight->depart_time_hour > flight2->depart_time_hour) {
+                temp = flight;
+                flight = flight2;
+                flight2 = temp;
+            } else if (flight->depart_time_hour == flight2->depart_time_hour) {
+                if (flight->depart_time_minute > flight2->depart_time_minute) {
+                    temp = flight;
+                    flight = flight2;
+                    flight2 = temp;
+                }
+            }
+            flight2 = flight2->next;
+        }
+        flight = flight->next;
+    }*/
+}     
 
 double calc_airport_distance(char *airportA_IATA, char *airportB_IATA) {
 

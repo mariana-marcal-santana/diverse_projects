@@ -9,4 +9,5 @@ void show_flights_1connection(char *origin, char *destiny) ;
 void show_flights_2connections(char *origin, char *destiny) ;
 void sort_flights_ascending(Flight_list *flights);
 void sort_flights_descending(Flight_list *flights);
+void show_flights_1connection_sorted(char *origin, char *destiny, char *sort_type) ;
 double calc_airport_distance(char *argv1, char *argv2) ;

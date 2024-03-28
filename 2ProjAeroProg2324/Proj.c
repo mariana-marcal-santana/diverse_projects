@@ -88,9 +88,9 @@ void read_airports(FILE *airports){
             airports_list->head = airport;
             airports_list->tail = airport;
         }else {
-            airports_list->head->prev = airport;
-            airport->next = airports_list->head;
-            airports_list->head = airport;
+            airport->prev = airports_list->tail;
+            airports_list->tail->next = airport;
+            airports_list->tail = airport;
         }
     }
 }
@@ -102,12 +102,16 @@ void read_fligths(FILE *routes) {
     while (fgets(line, sizeof(line), routes) != NULL) {
         if (sscanf(line, "AIRLINE: %s", current_airline) == 1) {
             continue;
+        }
+        else if (line[0] == '\n' || line[0] == '\0') {
+            continue;
         } else {
             Flight *flight = malloc(sizeof(Flight));
             flight->airline = malloc(10 * sizeof(char));
             flight->flight_code = malloc(10 * sizeof(char));
             flight->depart_IATA= malloc(5 * sizeof(char));
             flight->arrival_IATA = malloc(5 * sizeof(char));
+        
             sscanf(line, "%s %s %d:%d %s %d:%d", flight->flight_code, flight->depart_IATA,
                    &flight->depart_time_hour, &flight->depart_time_minute, flight->arrival_IATA,
                    &flight->arrival_time_hour, &flight->arrival_time_minute);
@@ -121,9 +125,9 @@ void read_fligths(FILE *routes) {
                 flights_list->head = flight;
                 flights_list->tail = flight;
             } else {
-                flights_list->head->prev = flight;
-                flight->next = flights_list->head;
-                flights_list->head = flight;
+                flights_list->tail->next = flight;
+                flight->prev = flights_list->tail;
+                flights_list->tail = flight;
             }
         }
     }
@@ -134,7 +138,8 @@ void case_flights() {
     
     while (flight != NULL) {
         
-        double distance = calc_airport_distance(flight->depart_IATA, flight->arrival_IATA);
+        double distance = 0 ;
+        distance = calc_airport_distance(flight->depart_IATA, flight->arrival_IATA);
         printf("%s %s ", flight->flight_code, flight->depart_IATA);
         printf("%.2d:%.2d ", flight->depart_time_hour, flight->depart_time_minute);
         printf("%s ", flight->arrival_IATA);
@@ -418,7 +423,9 @@ void show_flights_1connection_sorted(char *origin, char *destiny, char *sort_typ
 double calc_airport_distance(char *airportA_IATA, char *airportB_IATA) {
 
     int R = 6371 + 10;
-    Airport *airportA = NULL, *airportB = NULL, *airport = airports_list->head;
+    Airport *airportA = malloc(sizeof(Airport));
+    Airport *airportB = malloc(sizeof(Airport));
+    Airport *airport = airports_list->head;
 
     while (airport != NULL) {
         if (!strcmp(airport->IATA, airportA_IATA)) { airportA = airport; }
@@ -428,27 +435,34 @@ double calc_airport_distance(char *airportA_IATA, char *airportB_IATA) {
         
         if (airportA != NULL && airportB != NULL) { break; }
     }
-
-    double latA = (double)airportA->latitude.degrees + (double)airportA->latitude.minutes/60 + (double)airportA->latitude.seconds/3600;
-    double lonA = (double)airportA->longitude.degrees + (double)airportA->longitude.minutes/60 + (double)airportA->longitude.seconds/3600;
-    double latB = (double)airportB->latitude.degrees + (double)airportB->latitude.minutes/60 + (double)airportB->latitude.seconds/3600;
-    double lonB = (double)airportB->longitude.degrees + (double)airportB->longitude.minutes/60 + (double)airportB->longitude.seconds/3600;
+    double latA = 0, lonA = 0, latB = 0, lonB = 0;
+    latA = (double)airportA->latitude.degrees + (double)airportA->latitude.minutes/60 + (double)airportA->latitude.seconds/3600;
+    lonA = (double)airportA->longitude.degrees + (double)airportA->longitude.minutes/60 + (double)airportA->longitude.seconds/3600;
+    latB = (double)airportB->latitude.degrees + (double)airportB->latitude.minutes/60 + (double)airportB->latitude.seconds/3600;
+    lonB = (double)airportB->longitude.degrees + (double)airportB->longitude.minutes/60 + (double)airportB->longitude.seconds/3600;
     
-    double xA = R * cos(latA) * cos(lonA);
-    double yA = R * cos(latA) * sin(lonA);
-    double zA = R * sin(latA);
+    double xA = 0, yA = 0, zA = 0, xB = 0, yB = 0, zB = 0;
+    xA = R * cos(latA) * cos(lonA);
+    yA = R * cos(latA) * sin(lonA);
+    zA = R * sin(latA);
 
-    double xB = R * cos(latB) * cos(lonB);
-    double yB = R * cos(latB) * sin(lonB);
-    double zB = R * sin(latB);
+    xB = R * cos(latB) * cos(lonB);
+    yB = R * cos(latB) * sin(lonB);
+    zB = R * sin(latB);
 
-    double modA = sqrt(xA*xA + yA*yA + zA*zA);
-    double modB = sqrt(xB*xB + yB*yB + zB*zB);
+    double modA = 0, modB = 0;
+    modA = sqrt(xA*xA + yA*yA + zA*zA);
+    modB = sqrt(xB*xB + yB*yB + zB*zB);
 
-    double int_product = xA * xB + yA * yB + zA * zB;
+    double int_product = 0;
+    int_product = xA * xB + yA * yB + zA * zB;
     
-    double cos_theta = int_product / (modA * modB);
-    double theta = acos(cos_theta);
+    double cos_theta = 0 , theta = 0;
+    cos_theta = int_product / (modA * modB);
+    theta = acos(cos_theta);
+    
+    free(airportA);
+    free(airportB);
     
     return R * theta;
 }

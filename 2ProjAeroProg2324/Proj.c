@@ -423,46 +423,47 @@ void show_flights_1connection_sorted(char *origin, char *destiny, char *sort_typ
 double calc_airport_distance(char *airportA_IATA, char *airportB_IATA) {
 
     int R = 6371 + 10;
-    Airport *airportA = malloc(sizeof(Airport));
-    Airport *airportB = malloc(sizeof(Airport));
+    double latA = 0, lonA = 0, latB = 0, lonB = 0, flagA = 0, flagB = 0;
+
     Airport *airport = airports_list->head;
 
     while (airport != NULL) {
-        if (!strcmp(airport->IATA, airportA_IATA)) { airportA = airport; }
-        if (!strcmp(airport->IATA, airportB_IATA)) { airportB = airport; }
-
-        airport = airport->next;
+        if (!strcmp(airport->IATA, airportA_IATA)) { 
+            latA = (double)airport->latitude.degrees + (double)airport->latitude.minutes/60 +
+                (double)airport->latitude.seconds/3600;
+            lonA = (double)airport->longitude.degrees + (double)airport->longitude.minutes/60 + 
+                (double)airport->longitude.seconds/3600;
+            flagA = 1;
+        }
+        if (!strcmp(airport->IATA, airportB_IATA)) { 
+            latB = (double)airport->latitude.degrees + (double)airport->latitude.minutes/60 + 
+                (double)airport->latitude.seconds/3600;
+            lonB = (double)airport->longitude.degrees + (double)airport->longitude.minutes/60 + 
+                (double)airport->longitude.seconds/3600;
+            flagB = 1;
+        }
         
-        if (airportA != NULL && airportB != NULL) { break; }
+        airport = airport->next;
+
+        if (flagA && flagB) { break; }
     }
-    double latA = 0, lonA = 0, latB = 0, lonB = 0;
-    latA = (double)airportA->latitude.degrees + (double)airportA->latitude.minutes/60 + (double)airportA->latitude.seconds/3600;
-    lonA = (double)airportA->longitude.degrees + (double)airportA->longitude.minutes/60 + (double)airportA->longitude.seconds/3600;
-    latB = (double)airportB->latitude.degrees + (double)airportB->latitude.minutes/60 + (double)airportB->latitude.seconds/3600;
-    lonB = (double)airportB->longitude.degrees + (double)airportB->longitude.minutes/60 + (double)airportB->longitude.seconds/3600;
-    
-    double xA = 0, yA = 0, zA = 0, xB = 0, yB = 0, zB = 0;
-    xA = R * cos(latA) * cos(lonA);
-    yA = R * cos(latA) * sin(lonA);
-    zA = R * sin(latA);
+   
+    //double xA = 0, yA = 0, zA = 0, xB = 0, yB = 0, zB = 0;
+    double xA = R * cos(latA) * cos(lonA);
+    double yA = R * cos(latA) * sin(lonA);
+    double zA = R * sin(latA);
 
-    xB = R * cos(latB) * cos(lonB);
-    yB = R * cos(latB) * sin(lonB);
-    zB = R * sin(latB);
+    double xB = R * cos(latB) * cos(lonB);
+    double yB = R * cos(latB) * sin(lonB);
+    double zB = R * sin(latB);
 
-    double modA = 0, modB = 0;
-    modA = sqrt(xA*xA + yA*yA + zA*zA);
-    modB = sqrt(xB*xB + yB*yB + zB*zB);
+    double modA = sqrt(xA*xA + yA*yA + zA*zA);
+    double modB = sqrt(xB*xB + yB*yB + zB*zB);
 
-    double int_product = 0;
-    int_product = xA * xB + yA * yB + zA * zB;
+    double int_product = xA * xB + yA * yB + zA * zB;
     
-    double cos_theta = 0 , theta = 0;
-    cos_theta = int_product / (modA * modB);
-    theta = acos(cos_theta);
-    
-    free(airportA);
-    free(airportB);
-    
+    double cos_theta = int_product / (modA * modB);
+    double theta = acos(cos_theta);
+
     return R * theta;
 }

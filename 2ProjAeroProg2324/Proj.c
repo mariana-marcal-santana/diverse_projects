@@ -228,54 +228,70 @@ void show_direct_flights_sorted(char *origin, char *destiny, char *sort_type) {
 }
 
 void sort_flights_ascending(Flight_list *flights) {
-
-    printf("Sorting ascending\n");
-
-    Flight *flight = flights->head, *temp = NULL;
-
+   
     int flag = 1;
-    
+    Flight *temp = NULL;
+
     while (flag) {
         flag = 0;
-        flight = flights->head;
-        
-        while (flight->next != NULL) {
-            if (flight->depart_time_hour > flight->next->depart_time_hour ||
-            (flight->depart_time_hour == flight->next->depart_time_hour &&
-            flight->depart_time_minute > flight->next->depart_time_minute)) {
-                printf("in1");
-                temp = flight;
-                flight = flight->next;
-                flight->next = temp;
+        Flight *current_flight = flights->head;
+        Flight *prev_flight = NULL;
+
+        while (current_flight != NULL && current_flight->next != NULL) {
+            if (current_flight->depart_time_hour > current_flight->next->depart_time_hour ||
+                (current_flight->depart_time_hour == current_flight->next->depart_time_hour &&
+                 current_flight->depart_time_minute > current_flight->next->depart_time_minute)) {
+               
+                if (prev_flight != NULL) {
+                    prev_flight->next = current_flight->next;
+                } else {
+                    flights->head = current_flight->next;
+                }
+
+                temp = current_flight->next;
+                current_flight->next = temp->next;
+                temp->next = current_flight;
+
                 flag = 1;
             } 
-            flight = flight->next;
+            prev_flight = current_flight;
+            current_flight = current_flight->next;
         }
     }
 }
 
 void sort_flights_descending(Flight_list *flights) {
-    Flight *flight = flights->head, *flight2 = flights->head;
+
+    int flag = 1;
     Flight *temp = NULL;
-   
-    while (flight != NULL) {
-        while (flight2 != NULL) {
-            if (flight->depart_time_hour > flight2->depart_time_hour) {
-                temp = flight;
-                flight = flight2;
-                flight2 = temp;
-            } else if (flight->depart_time_hour == flight2->depart_time_hour) {
-                if (flight->depart_time_minute > flight2->depart_time_minute) {
-                    temp = flight;
-                    flight = flight2;
-                    flight2 = temp;
+
+    while (flag) {
+        flag = 0;
+        Flight *current_flight = flights->head;
+        Flight *prev_flight = NULL;
+
+        while (current_flight != NULL && current_flight->next != NULL) {
+            if (current_flight->depart_time_hour < current_flight->next->depart_time_hour ||
+                (current_flight->depart_time_hour == current_flight->next->depart_time_hour &&
+                 current_flight->depart_time_minute < current_flight->next->depart_time_minute)) {
+            
+                if (prev_flight != NULL) {
+                    prev_flight->next = current_flight->next;
+                } else {
+                    flights->head = current_flight->next;
                 }
-            }
-            flight2 = flight2->next;
+
+                temp = current_flight->next;
+                current_flight->next = temp->next;
+                temp->next = current_flight;
+
+                flag = 1;
+            } 
+            prev_flight = current_flight;
+            current_flight = current_flight->next;
         }
-        flight = flight->next;
     }
-}     
+}
 
 void show_flights_1connection(char *origin, char *destiny) {
 

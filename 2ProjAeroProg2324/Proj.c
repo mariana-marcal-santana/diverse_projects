@@ -95,22 +95,23 @@ void read_airports(FILE *airports){
     }
 }
 
-void read_fligths(FILE *routes){
+void read_fligths(FILE *routes) {
     char line[200];
-    char* current_airline = malloc(10 * sizeof(char));
-    while (fgets(line, sizeof(line), routes) != NULL){
-        
-        if (sscanf(line,"AIRLINE: %s", current_airline) == 1){}
-        else{
+    char current_airline[10]; 
+
+    while (fgets(line, sizeof(line), routes) != NULL) {
+        if (sscanf(line, "AIRLINE: %s", current_airline) == 1) {
+            continue;
+        } else {
             Flight *flight = malloc(sizeof(Flight));
             flight->airline = malloc(10 * sizeof(char));
             flight->flight_code = malloc(10 * sizeof(char));
             flight->depart_IATA= malloc(5 * sizeof(char));
             flight->arrival_IATA = malloc(5 * sizeof(char));
-            sscanf(line,"%s %s %d:%d %s %d:%d", flight->flight_code, flight->depart_IATA,
-            &flight->depart_time_hour, &flight->depart_time_minute, flight->arrival_IATA,
-            &flight->arrival_time_hour, &flight->arrival_time_minute);
-            
+            sscanf(line, "%s %s %d:%d %s %d:%d", flight->flight_code, flight->depart_IATA,
+                   &flight->depart_time_hour, &flight->depart_time_minute, flight->arrival_IATA,
+                   &flight->arrival_time_hour, &flight->arrival_time_minute);
+
             strcpy(flight->airline, current_airline);
 
             flight->next = NULL;
@@ -119,14 +120,13 @@ void read_fligths(FILE *routes){
             if (flights_list->head == NULL) {
                 flights_list->head = flight;
                 flights_list->tail = flight;
-            }else {
+            } else {
                 flights_list->head->prev = flight;
                 flight->next = flights_list->head;
                 flights_list->head = flight;
             }
         }
     }
-    free(current_airline);
 }
 
 void case_flights() {

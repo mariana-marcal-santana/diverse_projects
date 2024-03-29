@@ -1,9 +1,8 @@
-
 #include "support.h"
 
 void case_flights(Flight_list * flights_list,Airport_list *airports_list){
+   
     Flight *flight = flights_list->head;
-    
     while (flight != NULL) {
         
         double distance = 0 ;
@@ -16,9 +15,10 @@ void case_flights(Flight_list * flights_list,Airport_list *airports_list){
 }
 
 void case_airports(Airport_list *airports_list ) {
-    Airport *airport = airports_list->head;
     
+    Airport *airport = airports_list->head;
     while (airport != NULL) {
+        
         LatLong *latitude = &airport->latitude;
         LatLong *longitude = &airport->longitude;
         
@@ -32,7 +32,7 @@ void case_airports(Airport_list *airports_list ) {
     }
 }
 
-double calc_airport_distance(char *airportA_IATA, char *airportB_IATA,Airport_list *airports_list) {
+double calc_airport_distance(char *airportA_IATA, char *airportB_IATA, Airport_list *airports_list) {
 
     int R = 6371 + 10;
     double latA = 0, lonA = 0, latB = 0, lonB = 0, flagA = 0, flagB = 0;
@@ -85,6 +85,38 @@ void print_flight_information(Flight *flight) {
     printf("%.2d:%.2d ", flight->arrival_time_hour, flight->arrival_time_minute);
 }
 
-void free_system() {
+void free_system(Airport_list *airport_list, Flight_list *flight_list) {
+    free_airports_list(airport_list);
+    free_flights_list(flight_list);
+}
 
+void free_airports_list(Airport_list *airport_list) {
+    Airport *airport = airport_list->head;
+    Airport *next_airport = NULL;
+    
+    while (airport != NULL) {
+        next_airport = airport->next;
+        free(airport->ICAO);
+        free(airport->IATA);
+        free(airport->city);
+        free(airport);
+        airport = next_airport;
+    }
+    free(airport_list);
+}
+
+void free_flights_list(Flight_list *flight_list) {
+    Flight *flight = flight_list->head;
+    Flight *next_flight = NULL;
+    
+    while (flight != NULL) {
+        next_flight = flight->next;
+        free(flight->airline);
+        free(flight->flight_code);
+        free(flight->depart_IATA);
+        free(flight->arrival_IATA);
+        free(flight);
+        flight = next_flight;
+    }
+    free(flight_list);
 }

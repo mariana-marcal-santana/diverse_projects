@@ -1,5 +1,3 @@
-
-
 #include "support.h"
 #include "read.h"
 #include "show.h"
@@ -63,5 +61,5 @@ int main(int argc, char *argv[]) {
             printf("Invalid number of arguments\n");
             break;
     }
-    free_system();
+    free_system(airports_list, flights_list);
 }

@@ -1,4 +1,3 @@
-
 #include "show.h"
 #include "support.h"
 #include "sort.h"
@@ -115,6 +114,7 @@ void show_direct_flights_sorted(char *origin, char *destiny, char *sort_type , F
         printf("\n");
         sorted_flight = sorted_flight->next;
     }
+    free_flights_list(sorted_flights);
 }
 
 void show_flights_1connection_sorted(char *origin, char *destiny, char *sort_type , Flight_list *flights_list) {
@@ -179,6 +179,7 @@ void show_flights_1connection_sorted(char *origin, char *destiny, char *sort_typ
         }
         sorted_flight = sorted_flight->next;
     }
+    free_flights_list(sorted_flights);
 }
 
 void show_flights_2connections_sorted(char *origin, char *destiny, char *sort_type , Flight_list *flights_list) {
@@ -254,6 +255,7 @@ void show_flights_2connections_sorted(char *origin, char *destiny, char *sort_ty
         }
         sorted_flight = sorted_flight->next;
     }
+    free_flights_list(sorted_flights);
 }
 /*
 void show_flights_shortest_distance_1connection(char *origin, char *destiny, char *sort_type, Flight_list *flights_list ) {}

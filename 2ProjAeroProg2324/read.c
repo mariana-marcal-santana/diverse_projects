@@ -1,4 +1,3 @@
-
 #include "read.h"
 
 void read_airports(FILE *airports, Airport_list *airports_list){

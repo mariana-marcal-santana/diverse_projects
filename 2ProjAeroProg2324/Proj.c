@@ -61,5 +61,7 @@ int main(int argc, char *argv[]) {
             printf("Invalid number of arguments\n");
             break;
     }
+    fclose(airports);
+    fclose(routes);
     free_system(airports_list, flights_list);
 }

@@ -7,8 +7,13 @@ void case_flights(Flight_list * flights_list,Airport_list *airports_list){
         
         double distance = 0 ;
         distance = calc_airport_distance(flight->depart_IATA, flight->arrival_IATA, airports_list);
+       
         print_flight_information(flight);
-        printf("Distance:%f\n", distance);
+        if (distance == -1) {
+            printf("Distance: N/A (Some airport not found)\n");
+        } else {
+            printf("Distance: %f\n", distance);
+        }   
         
         flight = flight->next;
     }   
@@ -55,9 +60,10 @@ double calc_airport_distance(char *airportA_IATA, char *airportB_IATA, Airport_l
         }
         
         airport = airport->next;
-
         if (flagA && flagB) { break; }
     }
+
+    if (!flagA || !flagB) { return -1; }
 
     double xA = R * cos(latA) * cos(lonA);
     double yA = R * cos(latA) * sin(lonA);

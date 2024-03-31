@@ -4,13 +4,13 @@
 #include "sort.h"
 #include "common.h"
 
-Airport_list *airports_list = NULL;
+Airport_list *airports_list = NULL;    //Initialize the lists to airport and flights
 Flight_list *flights_list = NULL;
 
 int main(int argc, char *argv[]) {
 
     FILE *airports, *routes;
-    airports = fopen("aeroportos.txt", "r");
+    airports = fopen("aeroportos.txt", "r");    //Open the files with the information
     routes = fopen("rotas.txt", "r");
     if (airports == NULL || routes == NULL) {
         printf("Error opening files\n");
@@ -28,10 +28,10 @@ int main(int argc, char *argv[]) {
         flights_list->tail = NULL;
     }
 
-    read_airports(airports,airports_list);
-    read_fligths(routes,flights_list);
+    read_airports(airports,airports_list);   //Read the information from the files
+    read_fligths(routes,flights_list);      //Read the information from the files   
 
-    switch (argc) {
+    switch (argc) {  //Switch to choose the case to execute
         case 2:
             if (!strcmp(argv[1], "-voos")) { case_flights(flights_list,airports_list); } // 1
             else if (!strcmp(argv[1], "-aeroportos")) { case_airports(airports_list); } // 2
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
             printf("Invalid number of arguments\n");
             break;
     }
-    fclose(airports);
+    fclose(airports);  //Close the files
     fclose(routes);
-    free_system(airports_list, flights_list);
+    free_system(airports_list, flights_list);  //Free the memory
 }

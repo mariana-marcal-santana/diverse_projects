@@ -38,21 +38,37 @@ int main(int argc, char *argv[]) {
             else { printf("Invalid argument\n"); }
             break;
         case 5:
-            int i = atoi(argv[4]);
+            char *endptr;
+            int i = strtol(argv[4], &endptr, 10);
+            if (endptr == argv[4]) {
+                printf("No digits were found\n");
+                return -1;
+            }
             if (i == 0) { show_direct_flights(argv[1], argv[2], flights_list); } // 3
             else if (i == 1) { show_flights_1connection(argv[1], argv[2] ,flights_list); } // 5
             else if (i == 2) { show_flights_2connections(argv[1], argv[2], flights_list); } // case for 2 connections
             else { printf("Invalid argument\n"); }
             break;
         case 6:
-            int j = atoi(argv[4]);
+            char *endptr2;
+            int j = strtol(argv[4], &endptr2, 10);
+            if (endptr2 == argv[4]) {
+                printf("No digits were found\n");
+                return -1;
+            }
             if (j == 0) { show_direct_flights_sorted(argv[1], argv[2], argv[5], flights_list); } // 4
             else if (j == 1) { show_flights_1connection_sorted(argv[1], argv[2], argv[5], flights_list); } // 6
             else if (j == 2) { show_flights_2connections_sorted(argv[1], argv[2], argv[5], flights_list); } // case for 2 connections
             else { printf("Invalid argument\n"); }
             break;
         case 7:
-            /*int k = atoi(argv[4]);
+            /*
+            char *endptr3;
+            int k = strtol(argv[4], &endptr3, 10);
+            if (endptr3 == argv[4]) {
+                printf("No digits were found\n");
+                return -1;
+            }
             if (k == 1) { show_flights_shortest_distance_1connection(argv[1], argv[2], argv[5], flights_list); }
             else if (k == 2) { show_flights_shortest_distance_2connections(argv[1], argv[2], argv[5], flights_list); }
             */

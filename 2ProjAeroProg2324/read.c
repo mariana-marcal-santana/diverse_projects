@@ -1,4 +1,5 @@
 #include "read.h"
+#include "support.h"
 
 void read_airports(FILE *airports, Airport_list *airports_list){
 
@@ -39,7 +40,7 @@ void read_airports(FILE *airports, Airport_list *airports_list){
     }
 }
 
-void read_fligths(FILE *routes , Flight_list *flights_list){
+void read_fligths(FILE *routes , Flight_list *flights_list , Airport_list *airports_list){
     char line[200];
     char current_airline[10]; 
 
@@ -61,9 +62,9 @@ void read_fligths(FILE *routes , Flight_list *flights_list){
                    &flight->arrival_time_hour, &flight->arrival_time_minute);
 
             strcpy(flight->airline, current_airline);
- 
             if (check_data_flight(flight)){  //Check if the data is valid
-                 
+                
+                flight->distance = calc_airport_distance(flight->depart_IATA, flight->arrival_IATA, airports_list);
                 flight->next = NULL;
                 flight->prev = NULL;
                                                     //Add the flight to the list

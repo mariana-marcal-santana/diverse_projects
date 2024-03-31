@@ -29,9 +29,9 @@ int main(int argc, char *argv[]) {
     }
 
     read_airports(airports,airports_list);   //Read the information from the files
-    read_fligths(routes,flights_list);      //Read the information from the files   
+    read_fligths(routes,flights_list,airports_list);      //Read the information from the files   
 
-    int i ,j ;
+    int i ,j ,k ;
     
     switch (argc) {  //Switch to choose the case to execute
         case 2:
@@ -54,9 +54,9 @@ int main(int argc, char *argv[]) {
             else { printf("Invalid argument\n"); }
             break;
         case 7:
-            /*k = atoi(argv[4]);
+            k = atoi(argv[4]);
             if (k == 1) { show_flights_shortest_distance_1connection(argv[1], argv[2], argv[5], flights_list); }
-            else if (k == 2) { show_flights_shortest_distance_2connections(argv[1], argv[2], argv[5], flights_list); }
+            /*else if (k == 2) { show_flights_shortest_distance_2connections(argv[1], argv[2], argv[5], flights_list); }
             */
             break;
         default:

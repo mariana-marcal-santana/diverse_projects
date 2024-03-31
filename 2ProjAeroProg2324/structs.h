@@ -19,6 +19,7 @@ typedef struct Flight {
     int arrival_time_minute;
     struct Flight *next;
     struct Flight *prev;
+    double distance;
 } Flight;
 
 typedef struct {

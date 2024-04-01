@@ -56,8 +56,7 @@ int main(int argc, char *argv[]) {
         case 7:
             k = atoi(argv[4]);
             if (k == 1) { show_flights_shortest_distance_1connection(argv[1], argv[2], argv[5], flights_list); }
-            /*else if (k == 2) { show_flights_shortest_distance_2connections(argv[1], argv[2], argv[5], flights_list); }
-            */
+            else if (k == 2) { show_flights_shortest_distance_2connections(argv[1], argv[2], argv[5], flights_list); }
             break;
         default:
             printf("Invalid number of arguments\n");

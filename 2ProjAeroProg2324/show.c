@@ -275,6 +275,8 @@ void show_flights_shortest_distance_1connection(char *origin, char *destiny, cha
                     distance_min = flight1->distance + flight2->distance;
                     clean_flights_list(sorted_flights);
                     sorted_flights = realloc(sorted_flights, sizeof(Flight_list));
+                    Flight *new_flight = create_flight(flight1);
+                    add_flight_to_list(sorted_flights, new_flight);
                 }
                 else if (distance_min == flight1->distance + flight2->distance) {
                     Flight *new_flight = create_flight(flight1);

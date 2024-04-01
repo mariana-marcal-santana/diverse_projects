@@ -13,4 +13,5 @@ void free_flights_list(Flight_list *flights_list) ;
 Flight *create_flight(Flight *flight) ;
 void add_flight_to_list(Flight_list *flight_list, Flight *flight) ;
 void clean_flights_list(Flight_list *flight_list) ;
+bool check_3_flights(Flight *flight1, Flight *flight2, Flight *flight3) ;
 #endif

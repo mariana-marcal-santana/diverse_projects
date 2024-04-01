@@ -63,7 +63,6 @@ void show_flights_2connections(char *origin, char *destiny , Flight_list *flight
         }
         flight = flight->next;
     }
-    
 }
 
 void show_direct_flights_sorted(char *origin, char *destiny, char *sort_type , Flight_list *flights_list) {

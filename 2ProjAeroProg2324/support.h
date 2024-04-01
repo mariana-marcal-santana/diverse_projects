@@ -10,4 +10,7 @@ void print_flight_information(Flight *flight) ;
 void free_system(Airport_list *airports_list, Flight_list *flights_list) ;
 void free_airports_list(Airport_list *airports_list) ;
 void free_flights_list(Flight_list *flights_list) ;
+Flight *create_flight(Flight *flight) ;
+void add_flight_to_list(Flight_list *flight_list, Flight *flight) ;
+void clean_flights_list(Flight_list *flight_list) ;
 #endif

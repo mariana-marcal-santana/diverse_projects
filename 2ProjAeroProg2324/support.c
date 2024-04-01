@@ -12,7 +12,7 @@ void case_flights(Flight_list * flights_list,Airport_list *airports_list){
         if (distance == -1) {
             printf("Distance: N/A (Some airport not found)\n");
         } else {
-            printf("Distance: %f\n", distance);
+            printf("Distance: %.9f\n", distance);
         }   
         
         flight = flight->next;
@@ -125,4 +125,52 @@ void free_flights_list(Flight_list *flight_list) {
         flight = next_flight;
     }
     free(flight_list);
+}
+
+void clean_flights_list(Flight_list *flight_list) {
+    Flight *flight = flight_list->head;
+    Flight *next_flight = NULL;
+    
+    while (flight != NULL) {
+        next_flight = flight->next;
+        free(flight->airline);
+        free(flight->flight_code);
+        free(flight->depart_IATA);
+        free(flight->arrival_IATA);
+        free(flight);
+        flight = next_flight;
+    }
+    flight_list->head = NULL;
+    flight_list->tail = NULL;
+}
+
+Flight *create_flight(Flight *flight) {
+    Flight *new_flight = malloc(sizeof(Flight));
+    new_flight->airline = malloc(10 * sizeof(char));
+    new_flight->flight_code = malloc(10 * sizeof(char));
+    new_flight->depart_IATA = malloc(5 * sizeof(char));
+    new_flight->arrival_IATA = malloc(5 * sizeof(char));
+    strcpy(new_flight->airline, flight->airline);
+    strcpy(new_flight->flight_code, flight->flight_code);
+    strcpy(new_flight->depart_IATA, flight->depart_IATA);
+    strcpy(new_flight->arrival_IATA, flight->arrival_IATA);
+    new_flight->depart_time_hour = flight->depart_time_hour;
+    new_flight->depart_time_minute = flight->depart_time_minute;
+    new_flight->arrival_time_hour = flight->arrival_time_hour;
+    new_flight->arrival_time_minute = flight->arrival_time_minute;
+    new_flight->distance = flight->distance;
+    new_flight->next = NULL;
+    new_flight->prev = NULL;
+    return new_flight;
+}
+
+void add_flight_to_list(Flight_list *flight_list, Flight *flight) {
+    if (flight_list->head == NULL) {
+        flight_list->head = flight;
+        flight_list->tail = flight;
+    } else {
+        flight_list->tail->next = flight;
+        flight->prev = flight_list->tail;
+        flight_list->tail = flight;
+    }
 }

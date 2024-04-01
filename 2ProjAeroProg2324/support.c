@@ -174,3 +174,14 @@ void add_flight_to_list(Flight_list *flight_list, Flight *flight) {
         flight_list->tail = flight;
     }
 }
+
+bool check_3_flights(Flight *flight1, Flight *flight2, Flight *flight3) {
+    return !strcmp(flight1->arrival_IATA, flight2->depart_IATA) &&
+        !strcmp(flight2->arrival_IATA, flight3->depart_IATA) &&
+        (flight1->arrival_time_hour < flight2->depart_time_hour ||
+        (flight1->arrival_time_hour == flight2->depart_time_hour &&
+        flight1->arrival_time_minute < flight2->depart_time_minute)) &&
+        (flight2->arrival_time_hour < flight3->depart_time_hour ||
+        (flight2->arrival_time_hour == flight3->depart_time_hour &&
+        flight2->arrival_time_minute < flight3->depart_time_minute));
+}

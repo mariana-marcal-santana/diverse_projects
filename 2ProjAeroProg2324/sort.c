@@ -1,4 +1,3 @@
-
 #include "sort.h"
 
 void sort_flights_ascending(Flight_list *flights) {
